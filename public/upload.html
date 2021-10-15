@@ -151,6 +151,8 @@
                         }
                         // 체크박스 데이터 바인딩 종료
 
+                        //작성자 추가
+
                         //데이터 바인딩
 
                         let savethings = {
@@ -160,7 +162,8 @@
                             날짜: new Date().toString(),
                             스킴: send_array,
                             선택: $('select[name=selector1]').val(),
-                            이미지: url
+                            이미지: url,
+                            uid: localStorage.getItem('user')
 
                         }
                         db.collection('product').add(savethings)

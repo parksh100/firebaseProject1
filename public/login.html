@@ -110,13 +110,17 @@
         const db = firebase.firestore();
         const storage = firebase.storage()
 
-        //로그인이 됐는지 안됐는지 판단하는 코드
+        //로그인 유저를 네브바에 표시하기, 로그인이 됐는지 안됐는지 판단하는 코드, 유저정보확인
+
+        // var 뺀거 = localStorage.getItem('user')
+        // $('#userName').html(JSON.parse(뺀거).displayName)
 
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 console.log(user.displayName)
                 console.log(user.uid)
                 $('#userName').html(user.displayName)
+                // localStorage.setItem('user', JSON.stringify(user))
             }
         })
 

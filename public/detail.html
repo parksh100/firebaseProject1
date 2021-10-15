@@ -14,7 +14,6 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">박성훈</a>
-            <span id=userName class="ms-auto mx-2">유저이름</span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -98,19 +97,16 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
 
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                console.log(user.displayName)
-                console.log(user.uid)
-                $('#userName').html(user.displayName)
-            }
-        })
 
         let queryString = new URLSearchParams(window.location.search)
 
 
         db.collection('product').doc(queryString.get('id')).get().then((result) => {
             console.log(result.data())
+            $('.title').html(result.data().제목)
+            $('.price').html(result.data().가격)
+            $('.detail-pic').css('background-image', `url( ${result.data().이미지} )`)
+
         })
 
 

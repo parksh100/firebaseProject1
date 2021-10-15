@@ -58,6 +58,7 @@
         <textarea class="form-control mt-2" id="content">content</textarea>
         <input type="text" class="form-control mt-2" id="price" placeholder="price">
         <input class="form-control mt-2" type="file" id="image">
+
         <!-- 체크박스 -->
         <div class="form-check">
             <input class="form-check-input" type="checkbox" value="ISO9001" id="chk1" name="scheme">
@@ -74,15 +75,12 @@
         <!-- 체크박스 종료 -->
 
         <!-- 드롭다운 셀렉터 -->
-
         <select class="form-select" aria-label="Default select example" name="selector1">
             <option selected>Open this select menu</option>
             <option value="1">One</option>
             <option value="2">Two</option>
             <option value="3">Three</option>
         </select>
-
-
         <!-- 드롭다운 셀렉터 종료 -->
 
         <button class="btn btn-danger mt-3" id="send">올리기</button>
@@ -114,44 +112,63 @@
     <script>
 
         const db = firebase.firestore();
-
+        const storage = firebase.storage()
         // db.collection('product').doc('상품3').set({ 제목: '키보드' })
 
         $('#send').click(function () {
 
-            // 멀티박스 데이터 바인딩
-            let send_array = Array()
-            let send_cnt = 0
-            let chkbox = $('.form-check-input')
+            // 이미지 저장
+            let file = document.querySelector('#image').files[0]
+            let storageRef = storage.ref()
+            let storePath = storageRef.child('image/' + file.name)
+            let upload = storePath.put(file)
 
-            for (i = 0; i < chkbox.length; i++) {
-                if (chkbox[i].checked == true) {
-                    send_array[send_cnt] = chkbox[i].value;
-                    send_cnt++;
-                }
-            }
-
-            // let priceNum = $('#price').val()
-
-            let savethings = {
-                제목: $('#title').val(),
-                내용: $('#content').val(),
-                가격: parseInt($('#price').val()).toLocaleString(),
-                날짜: new Date().toString(),
-                스킴: send_array,
-                선택: $('select[name=selector1]').val()
+            upload.on('state_changed',
+                //변화시 동작하는 함수
+                null,
+                //에러시 동작하는 함수
+                (error) => {
+                    console.log('실패사유는', error)
+                },
+                //성공시 동작하는 함수
+                () => {
+                    upload.snapshot.ref.getDownloadURL().then((url) => {
+                        console.log('업로드된 경로는', url)
 
 
-            }
-            db.collection('product').add(savethings)
-                .then((result) => {
-                    console.log(result)
-                    window.location.href = '/index.html'
+                        // 체크박스 데이터 바인딩
+                        let send_array = Array()
+                        let send_cnt = 0
+                        let chkbox = $('.form-check-input')
+
+                        for (i = 0; i < chkbox.length; i++) {
+                            if (chkbox[i].checked == true) {
+                                send_array[send_cnt] = chkbox[i].value;
+                                send_cnt++;
+                            }
+                        }
+                        // 체크박스 데이터 바인딩 종료
+
+                        //데이터 바인딩
+
+                        let savethings = {
+                            제목: $('#title').val(),
+                            내용: $('#content').val(),
+                            가격: parseInt($('#price').val()).toLocaleString(),
+                            날짜: new Date().toString(),
+                            스킴: send_array,
+                            선택: $('select[name=selector1]').val(),
+                            이미지: url
+
+                        }
+                        db.collection('product').add(savethings)
+                            .then((result) => {
+                                console.log(result)
+                                window.location.href = '/index.html'
+                            })
+                            .catch((err) => { console.log(err.message) })
+                    })
                 })
-                .catch((err) => { console.log(err.message) })
-
-
-
 
 
 

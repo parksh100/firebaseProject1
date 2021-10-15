@@ -109,6 +109,16 @@
         const db = firebase.firestore();
         const storage = firebase.storage()
 
+        //로그인이 됐는지 안됐는지 판단하는 코드
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                console.log(user.displayName)
+                console.log(user.uid)
+            }
+        })
+
+
         //가입하기 기능 구현
         $('#register').click(function () {
 

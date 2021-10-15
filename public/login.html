@@ -101,11 +101,15 @@
 
             let email = $('#email-new').val()
             let pw = $('#pw-new').val()
+            let name = $('#name-new').val()
 
 
             firebase.auth().createUserWithEmailAndPassword(email, pw).then((result) => {
                 console.log(result)
                 console.log(result.user)
+                result.user.updateProfile({
+                    displayName: name
+                }).then(() => { })
             })
         })
 

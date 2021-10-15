@@ -66,6 +66,18 @@
         <button type="submit" class="btn btn-primary" id="register">가입하기</button>
     </div>
 
+    <!-- 로그인 화면구성 -->
+    <div class="container mt-3">
+        <div class="mb-3">
+            <input type="email" class="form-control" placeholder="email" id="email">
+        </div>
+        <div class="mb-3">
+            <input type="password" class="form-control" placeholder="pw" id="pw">
+        </div>
+        <button type="submit" class="btn btn-danger" id="login">로그인하기</button>
+    </div>
+
+
 
 
     <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
@@ -107,10 +119,24 @@
             firebase.auth().createUserWithEmailAndPassword(email, pw).then((result) => {
                 console.log(result)
                 console.log(result.user)
+                // 이름 등 추가 정보 저장기능 구현
                 result.user.updateProfile({
                     displayName: name
                 }).then(() => { })
             })
+        })
+
+        //로그인하기 기능구현
+
+        $('#login').click(function () {
+
+            let email = $('#email').val()
+            let pw = $('#pw').val()
+
+            firebase.auth().signInWithEmailAndPassword(email, pw).then((result) => {
+                console.log(result.user)
+            })
+
         })
 
 

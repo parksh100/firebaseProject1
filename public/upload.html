@@ -137,7 +137,7 @@
                 제목: $('#title').val(),
                 내용: $('#content').val(),
                 가격: parseInt($('#price').val()).toLocaleString(),
-                날짜: new Date(),
+                날짜: new Date().toString(),
                 스킴: send_array,
                 선택: $('select[name=selector1]').val()
 

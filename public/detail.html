@@ -60,8 +60,10 @@
             <h5>올린사람 : 모름</h5>
             <hr>
             <h5 class="title">상품명</h5>
+            <!-- 지금 url에 기록된 id를 가진 게시물의 상품명 -->
             <p class="date">올린날짜</p>
             <p class="price">가격</p>
+            <!-- 지금 url에 기록된 id를 가진 게시물의 가격 -->
         </div>
     </div>
 
@@ -94,6 +96,13 @@
 
         const db = firebase.firestore();
         const storage = firebase.storage()
+
+        let queryString = new URLSearchParams(window.location.search)
+
+
+        db.collection('product').doc(queryString.get('id')).get().then((result) => {
+            console.log(result.data())
+        }).catch(() => { })
 
 
 

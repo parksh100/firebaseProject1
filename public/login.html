@@ -115,7 +115,7 @@
 
         var 뺀거 = localStorage.getItem('user')
         console.log(뺀거)
-        $('#userName').html(JSON.parse(뺀거).displayName)
+        // $('#userName').html(JSON.parse(뺀거).displayName)
 
 
         firebase.auth().onAuthStateChanged((user) => {
@@ -139,12 +139,21 @@
 
 
             firebase.auth().createUserWithEmailAndPassword(email, pw).then((result) => {
+
+                let userInfo = {
+                    이름: name,
+                    이메일: email,
+                    패스워드: pw
+                }
+
+                db.collection('user').doc(result.user.uid).set(userInfo)
+
                 console.log(result)
                 console.log(result.user)
                 // 이름 등 추가 정보 저장기능 구현
                 result.user.updateProfile({
                     displayName: name
-                }).then(() => { })
+                })
             })
         })
 

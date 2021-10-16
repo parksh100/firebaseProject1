@@ -126,7 +126,32 @@
             $('#price').val(result.data().가격)
             $('.form-check-input').val(result.data().스킴)
             $('.form-select').val(result.data().선택)
+        })
 
+
+
+        $('#update').click(function () {
+
+            let update_array = Array()
+            let update_cnt = 0
+            let chkbox = $('.form-check-input')
+
+            for (i = 0; i < chkbox.length; i++) {
+                if (chkbox[i].checked == true) {
+                    update_array[update_cnt] = chkbox[i].value;
+                    update_cnt++;
+                }
+            }
+
+            let updateThings = {
+                제목: $('#title').val(),
+                가격: parseInt($('#price').val()).toLocaleString(),
+                내용: $('#content').val(),
+                스킴: update_array,
+                선택: $('select[name=selector1]').val(),
+            }
+
+            db.collection('product').doc(queryString.get('id')).update(updateThings)
 
         })
 

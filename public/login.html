@@ -14,7 +14,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">박성훈</a>
-            <span id=userName class="ms-auto mx-2">유저이름</span>
+            <span id=userName class="ms-auto mx-2 d-flex">유저이름</span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -111,16 +111,22 @@
         const storage = firebase.storage()
 
         //로그인 유저를 네브바에 표시하기, 로그인이 됐는지 안됐는지 판단하는 코드, 유저정보확인
+        // 유저정보를 로컬스토리지에서 빼옴. 빼온것을 다시 object로 전환하는 함수 Json.parse사용해서 .??형식으로 빼옴
 
-        // var 뺀거 = localStorage.getItem('user')
-        // $('#userName').html(JSON.parse(뺀거).displayName)
+        var 뺀거 = localStorage.getItem('user')
+        console.log(뺀거)
+        $('#userName').html(JSON.parse(뺀거).displayName)
+
 
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 console.log(user.displayName)
                 console.log(user.uid)
                 $('#userName').html(user.displayName)
-                // localStorage.setItem('user', JSON.stringify(user))
+                // 유저정보를 잠깐 로칼스토리지에 저장해서 빨리 가져올 수 있게
+                // localStorage.setItem('정보이름(작명)', '값') 형식으로 글자만 입력가능하므로 오브젝트를 입력하려면 글자로 바꾸는 함수를 사용해야함..
+                localStorage.setItem('user', JSON.stringify(user))
+                // $('#userName').html(user.displayName)
             }
         })
 
@@ -159,7 +165,7 @@
 
         $('#logout').click(function () {
             firebase.auth().signOut()
-
+            localStorage.removeItem('user')
         })
 
 

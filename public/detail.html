@@ -106,8 +106,7 @@
 
         $('#chat').click(function () {
             let data = {
-                from: myUid,
-                to: sellerUid,
+                who: [myUid, sellerUid],
                 date: new Date(),
                 product: goodsTitle,
             }

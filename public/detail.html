@@ -66,6 +66,7 @@
             <!-- 지금 url에 기록된 id를 가진 게시물의 가격 -->
         </div>
         <button class="btn btn-outline-secondary" id="edit">수정</button>
+        <button class="btn btn-outline-secondary" id="chat">채팅</button>
 
     </div>
 
@@ -99,10 +100,27 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
 
+        var 내uid = JSON.parse(localStorage.getItem('user')).uid
+
+        $('#chat').click(function () {
+            var 데이터 = {
+                who: [내uid, sellerUid],
+                product: goodsTitle,
+                date: new Date()
+            }
+            db.collection('chatroom').add(데이터)
+        })
+
+
+
+
+
+
 
         //다른 함수안에 있는 변수를 가져오려면 함수 밖에서 호출해야 하는데 불가능함. 
         // 원래는 아래 함수 안에 넣어서 코딩하면 되나 코드가 복잡해지고 가독성도 떨어지므로. 
         // 편법으로 함수밖에 함수만 선언해두고 그것을 조정하는 방식으로 적용
+
         var sellerUid;
         var goodsTitle;
 

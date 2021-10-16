@@ -107,7 +107,7 @@
         $('#chat').click(function () {
             let data = {
                 who: [myUid, sellerUid],
-                date: new Date(),
+                date: new Date().toString(),
                 product: goodsTitle,
             }
             db.collection('chatroom').add(data)

@@ -107,6 +107,15 @@
 
         const db = firebase.firestore();
         const storage = firebase.storage();
+        // 내가 원하는 쿼리 적용
+        // where('필드', '연산자','값')
+        let 내Uid = JSON.parse(localStorage.getItem('user')).uid
+
+        db.collection('chatroom').where('who', 'array-contains', 내Uid).get().then((result) => {
+            result.forEach((a) => {
+                console.log(a.data())
+            })
+        })
 
     </script>
 

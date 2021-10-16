@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="main.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">박성훈</a>
+            <span id=userName class="ms-auto mx-2">유저이름</span>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Dropdown
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled">Disabled</a>
+                    </li>
+                </ul>
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-3">
+        <input type="text" class="form-control mt-2" id="title" placeholder="title">
+        <textarea class="form-control mt-2" id="content">content</textarea>
+        <input type="text" class="form-control mt-2" id="price" placeholder="price">
+        <!-- <input class="form-control mt-2" type="file" id="image"> -->
+
+        <!-- 체크박스 -->
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="ISO9001" id="chk1" name="scheme">
+            <label class="form-check-label" for="chk1">
+                ISO 9001:2015
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="ISO14001" id="chk2" name="scheme">
+            <label class="form-check-label" for="chk2">
+                ISO14001:2015
+            </label>
+        </div>
+        <!-- 체크박스 종료 -->
+
+        <!-- 드롭다운 셀렉터 -->
+        <select class="form-select" aria-label="Default select example" name="selector1">
+            <option selected>Open this select menu</option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+        </select>
+        <!-- 드롭다운 셀렉터 종료 -->
+
+        <button class="btn btn-danger mt-3" id="send">올리기</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyBm2WVzc6Cbtpq5nsTBR2jgXgKw-ZOC0I4",
+            authDomain: "fir-project1-e76c6.firebaseapp.com",
+            projectId: "fir-project1-e76c6",
+            storageBucket: "fir-project1-e76c6.appspot.com",
+            messagingSenderId: "227106692096",
+            appId: "1:227106692096:web:249654c1be004421f94ce5"
+        }
+
+        firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <script>
+
+        const db = firebase.firestore();
+        const storage = firebase.storage()
+        // db.collection('product').doc('상품3').set({ 제목: '키보드' })
+
+        $('#send').click(function () {
+
+            // 이미지 저장
+            let file = document.querySelector('#image').files[0]
+            let storageRef = storage.ref()
+            let storePath = storageRef.child('image/' + file.name)
+            let upload = storePath.put(file)
+
+            upload.on('state_changed',
+                //변화시 동작하는 함수
+                null,
+                //에러시 동작하는 함수
+                (error) => {
+                    console.log('실패사유는', error)
+                },
+                //성공시 동작하는 함수
+                () => {
+                    upload.snapshot.ref.getDownloadURL().then((url) => {
+                        console.log('업로드된 경로는', url)
+
+
+                        // 체크박스 데이터 바인딩
+                        let send_array = Array()
+                        let send_cnt = 0
+                        let chkbox = $('.form-check-input')
+
+                        for (i = 0; i < chkbox.length; i++) {
+                            if (chkbox[i].checked == true) {
+                                send_array[send_cnt] = chkbox[i].value;
+                                send_cnt++;
+                            }
+                        }
+                        // 체크박스 데이터 바인딩 종료
+
+                        //작성자 추가
+
+                        //데이터 바인딩
+
+                        let savethings = {
+                            제목: $('#title').val(),
+                            내용: $('#content').val(),
+                            가격: parseInt($('#price').val()).toLocaleString(),
+                            날짜: new Date().toString(),
+                            스킴: send_array,
+                            선택: $('select[name=selector1]').val(),
+                            이미지: url,
+                            uid: JSON.parse(localStorage.getItem('user')).uid,
+                            이름: JSON.parse(localStorage.getItem('user')).displayName
+
+                        }
+                        db.collection('product').add(savethings)
+                            .then((result) => {
+                                console.log(result)
+                                window.location.href = '/index.html'
+                            })
+                            .catch((err) => { console.log(err.message) })
+                    })
+                })
+
+
+
+
+        })
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                console.log(user.displayName)
+                console.log(user.uid)
+                $('#userName').html(user.displayName)
+            }
+        })
+
+
+
+    </script>
+
+
+</body>
+
+</html>

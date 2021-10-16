@@ -163,7 +163,8 @@
                             스킴: send_array,
                             선택: $('select[name=selector1]').val(),
                             이미지: url,
-                            uid: localStorage.getItem('user')
+                            uid: JSON.parse(localStorage.getItem('user')).uid,
+                            이름: JSON.parse(localStorage.getItem('user')).displayName
 
                         }
                         db.collection('product').add(savethings)

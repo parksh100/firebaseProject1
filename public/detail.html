@@ -100,11 +100,36 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
 
+        // 채팅기능 구현
+
+        let myUid = JSON.parse(localStorage.getItem('user')).uid
+
+        $('#chat').click(function () {
+            let data = {
+                from: myUid,
+                to: sellerUid,
+                date: new Date(),
+                product: goodsTitle,
+            }
+            db.collection('chatroom').add(data)
+        })
+
+        //다른 함수안에 있는 변수를 가져오려면 함수 밖에서 호출해야 하는데 불가능함. 
+        // 원래는 아래 함수 안에 넣어서 코딩하면 되나 코드가 복잡해지고 가독성도 떨어지므로. 
+        // 편법으로 함수밖에 함수만 선언해두고 그것을 조정하는 방식으로 적용
+        var sellerUid;
+        var goodsTitle;
+
+
         // url에서 쿼리스트링 빼오는 코드
         let queryString = new URLSearchParams(window.location.search)
 
 
         db.collection('product').doc(queryString.get('id')).get().then((result) => {
+
+            sellerUid = result.data().uid
+            goodsTitle = result.data().제목
+
             console.log(result.data())
             $('.title').html(result.data().제목)
             $('.price').html(`${result.data().가격}원`)

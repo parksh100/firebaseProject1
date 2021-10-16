@@ -56,7 +56,7 @@
     </nav>
 
     <div class="container mt-3">
-        <input type="text" class="form-control mt-2" id="title" placeholder="title">
+        <input type="text" class="form-control mt-2" id="title" placeholder="title" value="">
         <textarea class="form-control mt-2" id="content">content</textarea>
         <input type="text" class="form-control mt-2" id="price" placeholder="price">
         <!-- <input class="form-control mt-2" type="file" id="image"> -->
@@ -85,7 +85,7 @@
         </select>
         <!-- 드롭다운 셀렉터 종료 -->
 
-        <button class="btn btn-danger mt-3" id="send">올리기</button>
+        <button class="btn btn-danger mt-3" id="update">올리기</button>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
@@ -117,69 +117,22 @@
         const storage = firebase.storage()
         // db.collection('product').doc('상품3').set({ 제목: '키보드' })
 
-        $('#send').click(function () {
+        let queryString = new URLSearchParams(window.location.search)
 
-            // 이미지 저장
-            let file = document.querySelector('#image').files[0]
-            let storageRef = storage.ref()
-            let storePath = storageRef.child('image/' + file.name)
-            let upload = storePath.put(file)
-
-            upload.on('state_changed',
-                //변화시 동작하는 함수
-                null,
-                //에러시 동작하는 함수
-                (error) => {
-                    console.log('실패사유는', error)
-                },
-                //성공시 동작하는 함수
-                () => {
-                    upload.snapshot.ref.getDownloadURL().then((url) => {
-                        console.log('업로드된 경로는', url)
-
-
-                        // 체크박스 데이터 바인딩
-                        let send_array = Array()
-                        let send_cnt = 0
-                        let chkbox = $('.form-check-input')
-
-                        for (i = 0; i < chkbox.length; i++) {
-                            if (chkbox[i].checked == true) {
-                                send_array[send_cnt] = chkbox[i].value;
-                                send_cnt++;
-                            }
-                        }
-                        // 체크박스 데이터 바인딩 종료
-
-                        //작성자 추가
-
-                        //데이터 바인딩
-
-                        let savethings = {
-                            제목: $('#title').val(),
-                            내용: $('#content').val(),
-                            가격: parseInt($('#price').val()).toLocaleString(),
-                            날짜: new Date().toString(),
-                            스킴: send_array,
-                            선택: $('select[name=selector1]').val(),
-                            이미지: url,
-                            uid: JSON.parse(localStorage.getItem('user')).uid,
-                            이름: JSON.parse(localStorage.getItem('user')).displayName
-
-                        }
-                        db.collection('product').add(savethings)
-                            .then((result) => {
-                                console.log(result)
-                                window.location.href = '/index.html'
-                            })
-                            .catch((err) => { console.log(err.message) })
-                    })
-                })
-
-
+        db.collection('product').doc(queryString.get('id')).get().then((result) => {
+            console.log(result.data())
+            $('#title').val(result.data().제목)
+            $('#content').val(result.data().내용)
+            $('#price').val(result.data().가격)
+            $('.form-check-input').val(result.data().스킴)
+            $('.form-select').val(result.data().선택)
 
 
         })
+
+
+
+
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 console.log(user.displayName)

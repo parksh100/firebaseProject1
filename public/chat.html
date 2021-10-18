@@ -99,7 +99,6 @@
             messagingSenderId: "227106692096",
             appId: "1:227106692096:web:249654c1be004421f94ce5"
         }
-
         firebase.initializeApp(firebaseConfig);
     </script>
 
@@ -108,7 +107,53 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
 
+        //where('필4드', '연산', '값')
+        myUid = JSON.parse(localStorage.getItem('user')).uid;
 
+
+        $('#send').click(function () {
+            var 데이터 = {
+                content: $('#chat-input').val(),
+                date: new Date(),
+                uid: myUid
+            }
+            db.collection('chatroom').doc(채팅방id).collection('messages').add(데이터)
+
+        })
+
+
+        var 채팅방id
+
+        db.collection('chatroom').where('who', 'array-contains', myUid).get().then((result) => {
+            result.forEach(a => {
+                console.log(a.data())
+                var template = ` <li class="list-group-item">
+                        <h6> ${a.data().product} </h6>
+                        <h6 class="text-small">${a.id}</h6>
+                    </li>`
+                $('.chat-list').append(template)
+
+                $('.list-group-item').click(function (e) {
+                    // this는 현재 누른 요소
+                    채팅방id = $(this).children('.text-small').text()
+                    // 버블링 막아주는 함수
+                    e.stopImmediatePropagation()
+
+
+
+                    db.collection('chatroom').doc(채팅방id).collection('messages').orderBy('date').onSnapshot((result) => {
+                        //오브젝트 특성상 순서가 없으므로 댓글 순서를 보장하지 않음. 따라서 날짜를 잘 관리해서 orderBy('date')를 활용할 수 있음
+                        //onSnapshot은 실시간 변동사항 반영하는 코드
+                        $('.chat-content').html('') // 채팅방 이동시 clear해주는 함수
+                        result.forEach((a) => {
+                            // console.log(a.data())
+                            var template = `<li><span class="chat-box">${a.data().content}</span></li>`
+                            $('.chat-content').append(template)
+                        })
+                    })
+                })
+            });
+        })
 
     </script>
 
